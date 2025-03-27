@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Memory Management Visualizer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            max-width: 1000px;
+            margin: 20px auto;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .input-group {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Memory Management Visualizer 🖥️</h1>
+        
+        
+
+        
+
+        <div class="input-group">
+            <label>🔢 Page Sequence (comma-separated):</label>
+            <input type="text" id="pages" value="1,2,3,4,1,2,5,1,2,3,4,5">
+        </div>
+
+        <button onclick="startSimulation()">🚀 Start Simulation</button>
+
+        <div id="simulation" class="simulation">
+            <h2>📊 Simulation Progress</h2>
+            <div id="currentState"></div>
+            <div id="frameDisplay" class="frame-container"></div>
+            <div id="stepLog" class="step-log"></div>
+            <div id="summary"></div>
+        </div>
+    </div>
+
+    <script>
+        class PagingSystem {
+            constructor(totalFrames, algorithm) {
+                this.totalFrames = totalFrames;
+                this.algorithm = algorithm;
+                this.frames = [];
+                this.pageFaults = 0;
+                this.memoryStates = [];
+                this.queue = [];
+                this.accessOrder = new Map();
+                this.lastRemoved = null;
+            }
+
+            
+        }
+
+        
+
+        async function startSimulation() {
+            const frames = parseInt(document.getElementById('frames').value);
+            const algorithm = document.getElementById('algorithm').value;
+            const pages = document.getElementById('pages').value.split(',').map(p => parseInt(p.trim()));
+            
+            const paging = new PagingSystem(frames, algorithm);
+            document.getElementById('simulation').style.display = 'block';
+            const stepLog = document.getElementById('stepLog');
+            stepLog.innerHTML = '';
+
+            for (const [index, page] of pages.entries()) {
+                const result = paging.accessPage(page);
+                const frameContainer = document.getElementById('frameDisplay');
+                frameContainer.innerHTML = '';
+                
+                // Create frame elements with animation
+                paging.frames.forEach(p => {
+                    const frame = createFrameElement(p, {
+                        fault: result.fault,
+                        newPage: result.newPage,
+                        removedPage: result.removedPage
+                    });
+                    frameContainer.appendChild(frame);
+                });
+
+                // Update current state display
+              
+
+                // Auto-scroll log
+                stepLog.scrollTop = stepLog.scrollHeight;
+                await new Promise(resolve => setTimeout(resolve, 1500));
+            }
+
+            // Show summary
+            document.getElementById('summary').innerHTML = `
+                <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                    <h3>📈 Simulation Summary</h3>
+                    <p>📊 Total Page Faults: <strong>${paging.pageFaults}</strong></p>
+                    <p>🏁 Final Memory State: [${paging.frames.join(', ')}]</p>
+                    <p>⚙️ Algorithm Used: ${algorithm}</p>
+                    <p>🔢 Total Pages Processed: ${pages.length}</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
