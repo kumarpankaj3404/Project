@@ -24,6 +24,103 @@
             border-radius: 8px;
             border: 1px solid #dee2e6;
         }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        button {
+            background: #3498db;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 20px auto;
+        }
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        .simulation {
+            margin-top: 30px;
+            display: none;
+        }
+        .frame-container {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .frame {
+            width: 70px;
+            height: 50px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            text-align: center;
+            line-height: 50px;
+            font-weight: bold;
+            background: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .frame.new {
+            background: #2ecc71;
+            color: white;
+            border-color: #27ae60;
+        }
+        .frame.removed {
+            background: #e74c3c;
+            color: white;
+            border-color: #c0392b;
+        }
+        .fault {
+            background: #ff6b6b !important;
+            color: white;
+            border-color: #ee5253 !important;
+        }
+        .step-log {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .explanation {
+            background: #fff9e6;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #f1c40f;
+            margin: 20px 0;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        h2 {
+            margin-top: 30px;
+            color: #3498db;
+        }
+        #currentState {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
         
     </style>
 </head>
