@@ -138,6 +138,23 @@
                 frameContainer.innerHTML = '';
                 
                 // Create frame elements with animation
+                function createFrameElement(page, state) {
+                    const frame = document.createElement('div');
+                    frame.className = `frame`;
+                    frame.textContent = page;
+                    
+                    if (state.newPage === page) {
+                        frame.classList.add('new');
+                    }
+                    if (state.removedPage === page) {
+                        frame.classList.add('removed');
+                    }
+                    if (state.fault && state.newPage === page) {
+                        frame.classList.add('fault');
+                    }
+                    
+                    return frame;
+                }
                 paging.frames.forEach(p => {
                     const frame = createFrameElement(p, {
                         fault: result.fault,
