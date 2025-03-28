@@ -30,7 +30,7 @@
 <body>
     <div class="container">
         <h1>🎮 Memory Management Visualizer 🖥️</h1>
-        
+
         <div class="input-group">
             <label>🖼️ Number of Frames:</label>
             <input type="number" id="frames" min="1" value="3">
@@ -74,6 +74,46 @@
                 this.queue = [];
                 this.accessOrder = new Map();
                 this.lastRemoved = null;
+            }
+            accessPage(page) {
+                let fault = false;
+                let isNew = false;
+                let removedPage = null;
+
+                if (!this.frames.includes(page)) {
+                    this.pageFaults++;
+                    fault = true;
+                    isNew = true;
+                    
+                    if (this.frames.length >= this.totalFrames) {
+                        if (this.algorithm === 'FIFO') {
+                            removedPage = this.queue.shift();
+                            this.frames = this.frames.filter(p => p !== removedPage);
+                        } else {
+                            const entries = Array.from(this.accessOrder.entries());
+                            removedPage = entries.reduce((min, entry) => 
+                                entry[1] < min[1] ? entry : min, entries[0])[0];
+                            this.frames = this.frames.filter(p => p !== removedPage);
+                        }
+                        this.lastRemoved = removedPage;
+                    }
+                    
+                    this.frames.push(page);
+                    this.queue.push(page);
+                }
+
+                if (this.algorithm === 'LRU') {
+                    this.accessOrder.set(page, Date.now());
+                }
+
+                this.memoryStates.push({
+                    frames: [...this.frames],
+                    fault,
+                    newPage: isNew ? page : null,
+                    removedPage: removedPage
+                });
+                
+                return { fault, newPage: isNew ? page : null, removedPage };
             }
 
             
