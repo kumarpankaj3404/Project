@@ -121,12 +121,28 @@
             margin: 15px 0;
             font-weight: bold;
         }
-        
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🎮 Memory Management Visualizer 🖥️</h1>
+        
+        <div class="explanation">
+            <h3>How It Works 🧠</h3>
+            <p>This simulator demonstrates memory management techniques using:</p>
+            <ul>
+                <li>🤖 <strong>Paging</strong>: Divides memory into fixed-size pages</li>
+                <li>🔄 <strong>Page Replacement Algorithms</strong> (FIFO/LRU)</li>
+                <li>⚠️ <strong>Page Faults</strong>: When a requested page isn't in memory</li>
+            </ul>
+            <p>During simulation:</p>
+            <ol>
+                <li>💡 Green frames = Newly added pages</li>
+                <li>💥 Red frames = Page faults</li>
+                <li>🗑️ Gray frames = Removed pages</li>
+                <li>📊 Step-by-step visualization shows memory state changes</li>
+            </ol>
+        </div>
 
         <div class="input-group">
             <label>🖼️ Number of Frames:</label>
@@ -140,9 +156,6 @@
                 <option value="LRU">LRU (Least Recently Used)</option>
             </select>
         </div>
-        
-
-        
 
         <div class="input-group">
             <label>🔢 Page Sequence (comma-separated):</label>
@@ -162,7 +175,6 @@
 
     <script>
         class PagingSystem {
-            
             constructor(totalFrames, algorithm) {
                 this.totalFrames = totalFrames;
                 this.algorithm = algorithm;
@@ -173,6 +185,7 @@
                 this.accessOrder = new Map();
                 this.lastRemoved = null;
             }
+
             accessPage(page) {
                 let fault = false;
                 let isNew = false;
@@ -213,11 +226,25 @@
                 
                 return { fault, newPage: isNew ? page : null, removedPage };
             }
-
-            
         }
 
-        
+        function createFrameElement(page, state) {
+            const frame = document.createElement('div');
+            frame.className = `frame`;
+            frame.textContent = page;
+            
+            if (state.newPage === page) {
+                frame.classList.add('new');
+            }
+            if (state.removedPage === page) {
+                frame.classList.add('removed');
+            }
+            if (state.fault && state.newPage === page) {
+                frame.classList.add('fault');
+            }
+            
+            return frame;
+        }
 
         async function startSimulation() {
             const frames = parseInt(document.getElementById('frames').value);
@@ -235,23 +262,6 @@
                 frameContainer.innerHTML = '';
                 
                 // Create frame elements with animation
-                function createFrameElement(page, state) {
-                    const frame = document.createElement('div');
-                    frame.className = `frame`;
-                    frame.textContent = page;
-                    
-                    if (state.newPage === page) {
-                        frame.classList.add('new');
-                    }
-                    if (state.removedPage === page) {
-                        frame.classList.add('removed');
-                    }
-                    if (state.fault && state.newPage === page) {
-                        frame.classList.add('fault');
-                    }
-                    
-                    return frame;
-                }
                 paging.frames.forEach(p => {
                     const frame = createFrameElement(p, {
                         fault: result.fault,
@@ -263,27 +273,27 @@
 
                 // Update current state display
                 document.getElementById('currentState').innerHTML = `
-                🕹️ Step ${index + 1}: Accessing Page <strong>${page}</strong>
-                ${result.fault ? 
-                    `<span style="color:#e74c3c">(Page Fault! ✖️)</span>` : 
-                    `<span style="color:#2ecc71">(Page Found ✓)</span>`}
-                ${result.removedPage ? `<br>🗑️ Removed Page: ${result.removedPage}` : ''}
-            `;
-
-            // Add step log entry
-            stepLog.innerHTML += `
-                <div class="log-entry" style="margin: 10px 0; padding: 10px; 
-                    background: ${result.fault ? '#ffe6e6' : '#e6ffe6'}; 
-                    border-radius: 4px;">
-                    <strong>Step ${index + 1}:</strong>
-                    📄 Requested Page: ${page}
-                    🖼️ Memory State: [${paging.frames.join(', ')}]
+                    🕹️ Step ${index + 1}: Accessing Page <strong>${page}</strong>
                     ${result.fault ? 
-                        `⚠️ Page Fault (${result.newPage} added)` : 
-                        `✅ Page Found`}
-                    ${result.removedPage ? `<br>➖ Removed Page: ${result.removedPage}` : ''}
-                </div>
-            `;
+                        `<span style="color:#e74c3c">(Page Fault! ✖️)</span>` : 
+                        `<span style="color:#2ecc71">(Page Found ✓)</span>`}
+                    ${result.removedPage ? `<br>🗑️ Removed Page: ${result.removedPage}` : ''}
+                `;
+
+                // Add step log entry
+                stepLog.innerHTML += `
+                    <div class="log-entry" style="margin: 10px 0; padding: 10px; 
+                        background: ${result.fault ? '#ffe6e6' : '#e6ffe6'}; 
+                        border-radius: 4px;">
+                        <strong>Step ${index + 1}:</strong>
+                        📄 Requested Page: ${page}
+                        🖼️ Memory State: [${paging.frames.join(', ')}]
+                        ${result.fault ? 
+                            `⚠️ Page Fault (${result.newPage} added)` : 
+                            `✅ Page Found`}
+                        ${result.removedPage ? `<br>➖ Removed Page: ${result.removedPage}` : ''}
+                    </div>
+                `;
 
                 // Auto-scroll log
                 stepLog.scrollTop = stepLog.scrollHeight;
