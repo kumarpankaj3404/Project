@@ -65,6 +65,7 @@
 
     <script>
         class PagingSystem {
+            
             constructor(totalFrames, algorithm) {
                 this.totalFrames = totalFrames;
                 this.algorithm = algorithm;
@@ -147,7 +148,28 @@
                 });
 
                 // Update current state display
-              
+                document.getElementById('currentState').innerHTML = `
+                🕹️ Step ${index + 1}: Accessing Page <strong>${page}</strong>
+                ${result.fault ? 
+                    `<span style="color:#e74c3c">(Page Fault! ✖️)</span>` : 
+                    `<span style="color:#2ecc71">(Page Found ✓)</span>`}
+                ${result.removedPage ? `<br>🗑️ Removed Page: ${result.removedPage}` : ''}
+            `;
+
+            // Add step log entry
+            stepLog.innerHTML += `
+                <div class="log-entry" style="margin: 10px 0; padding: 10px; 
+                    background: ${result.fault ? '#ffe6e6' : '#e6ffe6'}; 
+                    border-radius: 4px;">
+                    <strong>Step ${index + 1}:</strong>
+                    📄 Requested Page: ${page}
+                    🖼️ Memory State: [${paging.frames.join(', ')}]
+                    ${result.fault ? 
+                        `⚠️ Page Fault (${result.newPage} added)` : 
+                        `✅ Page Found`}
+                    ${result.removedPage ? `<br>➖ Removed Page: ${result.removedPage}` : ''}
+                </div>
+            `;
 
                 // Auto-scroll log
                 stepLog.scrollTop = stepLog.scrollHeight;
